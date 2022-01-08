@@ -1,32 +1,64 @@
-import numpy as np
-import networkx as nx
-import matplotlib.pyplot as plt
+from itertools import permutations
 
-array =  np.loadtxt('Input/Day09.txt',dtype=str,delimiter=',')
-x,y = np.shape(array)
-lista = []
+with open('Input/Day09.txt') as f:
+    lines = f.readlines()
 
-G = nx.Graph()
+distances = dict()
 
-for i in array:
-    if i[0] not in lista:
-        G.add_node(i[0])
+for line in lines:
+    tmp = line.split(',')
+    s   = tmp[0]
+    t   = tmp[1]
+    d   = int(tmp[2])
 
-for i in array:
-    G.add_edge(i[0],i[1],weight = int(i[2]))
+    if s in distances.keys():
+        distances[s].append((t, d))
+    else:
+        distances[s] = [(t, d)]
 
-for i in G.edges(data=True):
-    print(i)
+    if t in distances.keys():
+        distances[t].append((s, d))
+    else:
+        distances[t] = [(s, d)]
 
-#walk =  nx.all_shortest_paths(G,source="Tristram",target="Arbre",weight='weight')
-walk = nx.dfs_edges(G,"Tristram")
 
-for i in walk:
-    print(i)
+def cost(path):
 
-print(nx.shortest_path_length(G,source="Tristram",target="Arbre",weight='weight'))
-# print(lista)
+    total = 0
+    path  = list(path)
 
-# for i in range(x):
-#     print(array[i][0])
-#        
+    while len(path) > 1:
+        head         = path.pop(0)
+        destinations = distances[head]
+
+        for (d, cost) in destinations:
+            if d == path[0]:
+                total += cost
+                break
+
+    return total
+
+
+# brute force
+currentMin = 1000000000  # 'infinity'
+minPath    = []
+
+count = 0
+for path in permutations(distances.keys()):
+    tmp = cost(path)
+    if tmp < currentMin:
+        currentMin = tmp
+        minPath    = path
+
+currentMax = 0  # 'infinity'
+maxPath    = []
+
+count = 0
+for path in permutations(distances.keys()):
+    tmp = cost(path)
+    if tmp > currentMax:
+        currentMax = tmp
+        maxPath    = path
+
+print(currentMin, minPath)
+print(currentMax, maxPath)
