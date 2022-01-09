@@ -2,7 +2,7 @@ import numpy as np
 import ast
 from tabulate import tabulate as tb
 
-array = np.loadtxt('Input/Day08.txt',dtype=str,delimiter='\n')
+array = np.loadtxt("Input/Day08.txt", dtype=str, delimiter="\n")
 
 lista = []
 S_tot = M_tot = 0
