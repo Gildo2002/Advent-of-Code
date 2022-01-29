@@ -1,8 +1,3 @@
-# a = 97, z = 122
-
-from typing import ChainMap
-
-
 c = "hepxxzaa"
 min = 97
 max = 122
