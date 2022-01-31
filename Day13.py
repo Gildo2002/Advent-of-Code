@@ -1,48 +1,59 @@
-import itertools
+from itertools import permutations
+from re import L
 
-def load_values():
-    
-    x = [0,2,3,10]
-
-    with open('Input/Day13.txt') as R:
-        lines = R.readlines()
+def Total_Happiness(me = False):
 
     arr = {}
     person = set()
+    x = [0, 2, 3, 10]
 
-    for line in lines:
+    with open('Input/Day13.txt') as R:
+        for line in R.readlines():
 
-        data = line.split()
+            data = line.split()
+            value = 0
 
-        person1 = data[x[0]]
-        ope = data[x[1]]
-        value = int(data[x[2]])
-        person2 = data[x[3]]
+            p_one = data[x[0]]
+            p_two = data[x[3]]
 
-        person.add(person1)
+            ope = data[x[1]]
+            if ope == 'gain':
+                value = int(data[x[2]])
+            else:
+                value = -int(data[x[2]])
 
-        arr.update({person1+person2:[ope,value]})
+            person.add(p_one)
 
-    return arr,person
+            arr.update({p_one + p_two: value})
 
-arr, person = load_values()
-optime_pos = 0
+    if me:
+        for i in person:
+            arr.update({'me' + i: 0})
+            arr.update({i + 'me': 0})
+        person.add('me')
 
-for i in itertools.permutations(person):
-    suma = 0
-    for j in range(0,len(i)-1):
-        sitting = i[j] + i[j+1]
-        print(sitting)
-        value = arr[sitting]
-        if value[0] == 'gain':
-            suma += value[1]
-        else:
-            suma -= value[1]
+    calculate_happiness(arr,person)
 
-    if suma > optime_pos:
-        print(suma)
-        optime_pos = suma
-    break
+def calculate_happiness(arr,person):
 
-print(optime_pos)
+    optime_pos = 0
 
+    list_permutations = permutations(person)
+
+    for i in list_permutations:
+        suma = 0
+        for j in range(0, len(i) - 1):
+
+            suma += arr[i[j] + i[j+1]]
+            suma += arr[i[j+1] + i[j]]
+
+        suma += arr[i[-1] + i[0]]
+        suma += arr[i[0] + i[-1]]
+
+        if suma > optime_pos:
+            optime_pos = suma
+
+    print(optime_pos)
+
+Total_Happiness()
+Total_Happiness(True)
