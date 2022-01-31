@@ -34,6 +34,8 @@ def Total_Happiness(me = False):
 
     calculate_happiness(arr,person)
 
+
+
 def calculate_happiness(arr,person):
 
     optime_pos = 0
